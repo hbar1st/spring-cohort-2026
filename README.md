@@ -1,25 +1,29 @@
-# spring-cohort-2026
-## team meeting minutes and design discussions
+### spring-cohort-2026
+### team meeting minutes and design discussions
 
 Jan 27, 2026
 Attendees: hana-banana, <put your name here>
+
 ---
-## Discuss the MVP
+# Discuss the MVP
 ---
+
 ### The Project Description
-Pantry Tracker
+
+## Pantry Tracker
 "Everyone deserves food security"
 
 The idea: A platform for food banks and community pantries to manage their operations and connect with their community. The core idea: make it easier for pantries to track what they have, and for people who need food to know what's available before making the trip.
 
 Think about the different people who might use this: pantry staff managing inventory, volunteers signing up for shifts, and community members checking availability. How can you make each of their experiences smooth and dignified?
+
 ---
-### MVP
+## MVP
 
 Use Cases (for a food seeker)
-1) I am a food seeker and I am looking for a specific food item. (in a nearby locale - within certain # km)
+1) I am a food seeker and I am looking for a specific food item. (in a nearby locale - within certain # km -> maybe this become more flexible to use other units later)
 2) I am a food seeker and I am just looking for a food bank nearby.
-3) I am a food seeker and I need to lookup opening hours for my food bank (search by name)
+3) I am a food seeker and I need to lookup opening hours for my food bank (search by name)-> hours should appear in a localized way
 4) I am a food seeker and I need to find food by category (eg. baby food )
 
 Use Cases (for a a food bank/pantry)
