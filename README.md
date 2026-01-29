@@ -3,7 +3,7 @@
 ### team meeting minutes and design discussions
 
 Jan 27, 2026
-Attendees: hana-banana, hayden, <put your name here>
+Attendees: hana-banana, hayden, Autumn/Amanda <put your name here>
 
 ---
 
