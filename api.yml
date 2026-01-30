@@ -1,0 +1,151 @@
+openapi: '3.1.1'
+info:
+  title: Food Bank Finder & Management API
+  version: '1.0'
+servers:
+  - url: http://localhost:<port>/v1
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          minLength: 3
+          maxLength: 20
+        
+    FoodBank:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          minLength: 3
+          maxLength: 75
+          example: freeFoodBank
+        unit_no:
+          type: integer
+        street:
+          type: string
+          minLength: 5
+          maxLength: 50
+          example: 555 Food St.
+        city:
+          type: string
+          minLength: 2
+          maxLength: 20
+          example: Toronto
+        locality:
+          type: string
+          minLength: 2
+          maxLength: 20
+          description: a province or state or locality or area
+          example: Ontario
+        country:
+          type: string
+          minLength: 2
+          maxLength: 20
+          example: Canada
+        website:
+          type: string
+          minLength: 4
+          example: www.freeFoodBank.org
+        phone:
+          type: integer
+          description: validate to no more than 10 characters
+          example: 5555555555
+        fax:
+          type: integer
+          description: validate to no more than 10 characters
+        charity_registration_no:
+          type: integer
+        postal_code:
+          type: string
+          minLength: 4
+          maxLength: 6
+        longitude:
+          type: number
+          format: decimal
+          description: not part of MVP
+        latitude:
+          type: number
+          format: decimal
+          description: not part of MVP
+        primary_admin:
+          $ref: '#/components/schemas/user'
+        secondary_admin:
+          $ref: '#/components/schemas/user'
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: A machine-readable error code like 500
+          enum:
+            - INTERNAL_SERVER_ERROR # constant equal to 500
+            - NOT_FOUND_ERROR # constant equal to 404
+        message:
+          type: string
+          description: A human-readable message describing the error.
+          example: "An unexpected internal server error occurred"
+
+  responses:
+    InternalServerError:
+      description: An unexpected internal server error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            genericError:
+              value:
+                code: INTERNAL_SERVER_ERROR
+                message: "An unexpected internal server error occurred"
+
+paths:
+  # the api documentation
+  /:
+    get:
+      description: 'returns this yaml file'
+      responses:
+        '200':
+          description: OK
+          content:             
+            application/yaml:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/InternalServerError'
+  # list of all registered food banks
+  /fb:
+    get:
+      description: 'returns all food banks list'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FoodBank'
+                example:
+                  - id: 1
+                    name: freeFoodBank
+
+
+        
+              
