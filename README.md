@@ -3,11 +3,19 @@
 ### team meeting minutes and design discussions
 
 Jan 27, 2026
+<<<<<<< HEAD
 Attendees: hana-banana, hayden, Kevin<put your name here>
 Minutes: 
  - Worked on MVP user stories. Discussed our learning goals for the cohort time period. Discussed planned AI use if any.
  - Agreed to meet once more before Feb 2nd to finalize tech stack discussions with remainder of team
  
+||||||| parent of 8c901da (docs(readme): Add Kevin to the list of meeting attendees)
+Attendees: hana-banana, hayden, Autumn/Amanda <put your name here>
+
+=======
+Attendees: hana-banana, hayden, Autumn/Amanda, Kevin <put your name here>
+
+>>>>>>> 8c901da (docs(readme): Add Kevin to the list of meeting attendees)
 ---
 
 # Discuss the MVP
