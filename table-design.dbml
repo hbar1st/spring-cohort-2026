@@ -20,12 +20,14 @@ Table foodbanks as FB {
   fax int
   charity_registration_no varchar 
   admin int [ref: <> user.id, note: "admin can modify the food bank info"]
+  backup_admin int [ref: - user.id, note: "backup admin in case first one is leaving, they hand off to the second one first"]
   staff array [ref: < user.id, note: "staff can modify inventory only, not fb info"]
 }
 
 Table user {
   id int [pk, increment]
   username varchar(25) [not null]
+  email text [not null]
 }
 
 Table hours as rhours {
