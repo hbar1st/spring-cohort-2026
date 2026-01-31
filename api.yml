@@ -16,6 +16,8 @@ components:
           type: string
           minLength: 3
           maxLength: 20
+        email:
+          type: string
         
     FoodBank:
       type: object
@@ -76,10 +78,103 @@ components:
           type: number
           format: decimal
           description: not part of MVP
-        primary_admin:
-          $ref: '#/components/schemas/user'
-        secondary_admin:
-          $ref: '#/components/schemas/user'
+
+    Category:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      description: 'the food category'
+    
+    Hours:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        fb_id:
+          type: integer
+          example: 1
+        weekday:
+          type: integer
+          example: 3
+          minimum: 1
+          maximum: 7
+        opening_hr: 
+          type: integer
+          format: time
+        closing_hr:
+          type: integer
+          format: time 
+        temporarily_closed:
+          type: boolean
+          default: false 
+  
+    FoodInventory:
+      type: object 
+      properties:
+        fb_id: 
+          type: integer
+        food_id:
+          type: integer
+        quantity:
+          type: integer
+          default: 0
+
+    BoxInventory:
+      type: object
+      properties:
+        fb_id:
+          type: integer
+        box_id:
+          type: integer
+        quantity:
+          type: integer
+          default: 0    
+      
+    Food:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          minLength: 2
+          maxLength: 30
+        description:
+          type: string
+          maxLength: 100
+        category:
+          type: string
+        box: 
+          type: integer
+        barcode:
+          type: integer
+          minLength: 1
+          maxLength: 13
+  
+    Box:
+      type: object
+      required:
+      - id
+      - name
+      - fb_id
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          description: max length 35
+        fb_id:
+          type: integer
+          minimum: 1
+          description: the food bank id
+      description: ''
 
     ErrorResponse:
       type: object
@@ -145,7 +240,98 @@ paths:
                 example:
                   - id: 1
                     name: freeFoodBank
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/InternalServerError'
+  /category:
+    get:
+      description: 'returns a list of categories'
+      responses:
+        '200':
+          description: OK
+          content:             
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'        
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/InternalServerError'
+  /hours: 
+    get:
+      description: 'returns hours'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hours'
+  /food_inventory:
+    get:
+      description: 'returns a list of food inventories'  
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FoodInventory'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/InternalServerError'   
+  /box_inventory:
+    get:
+      description: "returns the list of box inventories"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BoxInventory'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/InternalServerError'
+  /food:
+    get:
+      description: "Returns the food list"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Food'
 
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/InternalServerError'
+  /boxes:
+    get:
+      description: "returns the list of boxes"
 
-        
-              
