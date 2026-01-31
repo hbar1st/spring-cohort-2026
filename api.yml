@@ -523,21 +523,7 @@ paths:
           $ref: "#/components/responses/InternalServerErrror"
 components:
   schemas:
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-          minimum: 1
-        username:
-          type: string
-          minLength: 3
-          maxLength: 20
-        email:
-          type: string
-        
-    FoodBank:
+    Box:
       type: object
       required:
         - id
@@ -546,37 +532,19 @@ components:
       properties:
         id:
           type: integer
-          example: 1
-          minimum: 1
+          examples:
+            - 1
+            - 2
+            - 3
         name:
           type: string
           description: max length 35
         fb_id:
           type: integer
-        postal_code:
-          type: string
-          minLength: 4
-          maxLength: 6
-        longitude:
-          type: number
-          format: decimal
-          description: not part of MVP
-        latitude:
-          type: number
-          format: decimal
-          description: not part of MVP
-        temporarily_closed:
-          type: boolean
-          default: false 
-          description: not part of MVP. If true, client will show 'Temporarily Closed' otherwise, the client will compare their own client's timzene with the foodbank's original timezone to figure out the current open/closed status
-        Hours:
-          $ref: '#/components/schemas/Hours'
-        primary_admin:
-          $ref: '#/components/schemas/User'
-        secondary_admin:
-          $ref: '#/components/schemas/User'
-
-    Category:
+          minimum: 1
+          description: the food bank id
+      description: A box of different food
+    User:
       type: object
       required:
         - username
@@ -602,20 +570,36 @@ components:
       properties:
         id:
           type: integer
-          example: 1
+          minimum: 1
+          description: the unique incremental id of this entry
+        fb_id:
+          type: integer
         weekday:
           type: integer
-          description: 1 is for Sunday, 2 for Monday, etc
-          example: 1
-          minimum: 1
           maximum: 7
           minimum: 1
           description: 1 means Sunday, 2 is Monday, 3 is Tuesday etc.
         closing_hr:
-          type: integer
-          format: time 
-      
-    Food:
+          type: string
+          description: time with timezone
+        opening_hr:
+          type: string
+          description: time with timezone
+        temporarily_closed:
+          type: boolean
+          examples:
+            - false
+          description: >-
+            by default the value is false which means the UI can display
+            open/closed based on the determination they make of the client's
+            timezone vs the food bank's timezone
+
+
+            The admin may set it to true in cases where they want to override
+            this calculation to force a state of 'Temporarily Closed' regardless
+            of the day/time.
+      description: the opening hours in a given day for a given food bank
+    Category:
       type: object
       required:
         - id
@@ -628,24 +612,11 @@ components:
             - 14
         name:
           type: string
-          minLength: 2
-          maxLength: 30
-        description:
-          type: string
-          maxLength: 100
-        category:
-          type: string
-        box: 
-          type: integer
-        barcode:
-          type: integer
-          minLength: 1
-          maxLength: 13
-        quantity:
-          type: integer
-          default: 0    
-
-    Box:
+          examples:
+            - Pride and Prejudice
+            - Moby-Dick
+      description: A food category like 'baby food' or 'fruit'
+    FoodBank:
       type: object
       required:
         - id
@@ -672,14 +643,40 @@ components:
           type: string
         phone:
           type: integer
-          minimum: 1
-          description: the food bank id
-        quantity:
-          type: integer
-          default: 0    
-      description: ''
-
-    ErrorResponse:
+        staff:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            description: the id of the employee
+        street:
+          type: string
+          examples:
+            - 555 Food Bank Way
+            - 55 Pantry St
+        country:
+          type: string
+        unit_no:
+          type: string
+          description: Can be a number or a letter
+        website:
+          $ref: "#/components/schemas/Hours"
+        latitude:
+          type: number
+          format: float
+        province:
+          type: string
+        longitude:
+          type: number
+          format: float
+        charity_id:
+          type: string
+        postal_code:
+          type: string
+        secondary_admin_id:
+          type: string
+      description: The food bank or food pantry entity and all its details.
+    Food:
       type: object
       properties:
         id:
@@ -712,73 +709,146 @@ components:
             properties:
               message:
                 type: string
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/InternalServerError'
-  # list of all registered food banks
-  /foodbank:
-    get:
-      description: 'returns all food banks list'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FoodBank'
-                example:
-                  - id: 1
-                    name: freeFoodBank
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/InternalServerError'
-  /category:
-    get:
-      description: 'returns a list of categories'
-      responses:
-        '200':
-          description: OK
-          content:             
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Category'        
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/InternalServerError'
-
-  /food:
-    get:
-      description: "Returns the food list"
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Food'
-
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/InternalServerError'
-  /box:
-    get:
-      description: "returns the list of boxes"
-
+                examples:
+                  - Lorem ipsum
+      description: The request could not be completed due to a conflict with the
+        current state of the resource. Resolve the conflict and try again.
+    NotFound:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                examples:
+                  - Lorem ipsum
+      description: The server cannot find the requested resource. The endpoint may be
+        invalid or the resource may no longer exist.
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                examples:
+                  - Lorem ipsum
+      description: The server could not understand the request due to invalid syntax.
+        The client should modify the request and try again.
+    InternalServerErrror:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+                examples:
+                  - Lorem ipsum
+      description: The server encountered an unexpected condition that prevented it
+        from fulfilling the request. Report the issue to the support team if it
+        persists.
+  parameters:
+    id:
+      name: id
+      in: query
+      description: the id of the food bank
+      schema:
+        type: integer
+      explode: true
+      style: form
+      allowReserved: false
+      allowEmptyValue: false
+    city:
+      name: city
+      in: query
+      description: the name of a city
+      schema:
+        type: string
+      explode: true
+      style: form
+      allowReserved: false
+      allowEmptyValue: false
+    name:
+      name: name
+      in: query
+      description: the name of the food bank
+      schema:
+        type: string
+      explode: true
+      style: form
+      allowReserved: false
+      allowEmptyValue: false
+    Admin:
+      in: cookie
+      name: Admin
+      style: form
+      schema:
+        type: string
+      explode: true
+      description: some cookie that identifies admins?
+      allowReserved: false
+      allowEmptyValue: false
+    Staff:
+      in: cookie
+      name: Staff
+      style: form
+      schema:
+        type: string
+      explode: true
+      description: some cookie that identifies staff? (an admin is staff, but staff is
+        not admin)
+      allowReserved: false
+      allowEmptyValue: false
+    Authorization:
+      in: header
+      name: Authorization
+      style: simple
+      schema:
+        type: string
+      explode: false
+      description: the authorization bearer token?
+      allowReserved: false
+      allowEmptyValue: false
+    fb_id:
+      name: fb_id
+      in: path
+      required: true
+      description: the id of the food bank
+      schema:
+        type: string
+      explode: false
+      style: simple
+      allowReserved: false
+      allowEmptyValue: true
+    food_id:
+      name: food_id
+      in: path
+      required: true
+      schema:
+        type: string
+    user_id:
+      name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    BearerJwt:
+      type: http
+      scheme: Bearer
+      description: "Jwt Auth: Authenticated requests contain a valid Json Web Token
+        (JWT) as part of the `Authorization: Bearer <JWT>` header."
+      bearerFormat: Json Web Token (JWT)
+tags:
+  - name: food bank
+  - name: food
+  - name: user
