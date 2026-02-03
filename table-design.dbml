@@ -27,7 +27,7 @@ Table foodbanks as FB {
 Table user {
   id int [pk, increment]
   username varchar(25) [not null]
-  email text [not null]
+  email text [unique, not null]
 }
 
 Table hours as rhours {
